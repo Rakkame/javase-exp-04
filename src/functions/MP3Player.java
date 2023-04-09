@@ -78,7 +78,7 @@ public class MP3Player extends Player {
 	 * @param flag true使播放暂停 false使播放继续
 	 */
 	public void pause(boolean flag) {
-		this.stopflag = true;
+		this.stopflag = flag;
 	}
 	
 	/**
