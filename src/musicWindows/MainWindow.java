@@ -1,26 +1,62 @@
 package musicWindows;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import javax.swing.*;
 
-import buttons.PlayerController;
-import functions.MP3Player;
+import buttons.PlayerStart;
 
 public class MainWindow {
+	
+	public static File loadSongDirectory() {
+		String usrdir = System.getProperty("user.dir");
+		File config = new File(usrdir + "/.config");
+		File songdir = null;
+		Properties pro = new Properties();
+		if(config.exists()) {
+			
+			InputStream input;
+			try {
+				input = new FileInputStream(config);
+				pro.load(input);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			songdir = new File(pro.getProperty("songdir"));
+		} else {
+			songdir = new File("./song");
+			try {
+				config.createNewFile();
+				pro.setProperty("songdir", songdir.getAbsolutePath());
+				FileOutputStream output = new FileOutputStream(config);
+				pro.store(output, "config");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return songdir;
+	}
 
 	public static void main(String[] args) {
+		
+		File songdir = loadSongDirectory();
 		
 		JFrame mainwindow = new JFrame("Music Listener");
 		mainwindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
+		
 		Dimension displaySize = Toolkit.getDefaultToolkit().getScreenSize();//获得显示器大小对象
 		Dimension frameSize = mainwindow.getSize();			//获得窗口大小对象
-		System.out.println("Screen:" + displaySize);
 		frameSize.width = displaySize.width *2/3;			//窗口的大小设置为显示器长宽的三分之二
 		frameSize.height = displaySize.height *2/3;
 		mainwindow.setSize(frameSize);
@@ -37,55 +73,52 @@ public class MainWindow {
 		player.add(last);
 		player.add(pause);
 		player.add(next);
-		File songdir = new File("E:/projectJava/javase-exp-04/song");
-		MP3Player mp3 = MP3Player.getmp3(songdir.getName()+'/'+"高橋李依、大西沙織、赤尾ひかる - 涙はみせない (不要流泪).mp3");
-		pause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(!mp3.isPlaying) {
-					mp3.start();
-					pause.setText("停止");
-				}
-				else {
-					try {
-						mp3.isPlaying = false;
-						pause.setText("播放");
-						MP3Player.player.close();
-						mp3.interrupt();
-						
-					} catch (IllegalMonitorStateException e2) {
-						System.err.println("Illegal!");
-						e2.printStackTrace();
-					}
-					
-				}
-			}
-		});
+		pause.setEnabled(false);
+		last.setEnabled(false);
+		next.setEnabled(false);
+		
+
 		
 		JPanel songlist = new JPanel();
-		mainwindow.add(songlist);
-		for(String s : songdir.list((FilenameFilter) new FilenameFilter() {
+		songlist.setBackground(new Color(175, 175, 175));
+		mainwindow.add(songlist, "Center");
+		int sq = 1;
+		for(String s : songdir.list((FilenameFilter) new FilenameFilter()
+		{
 			@Override
 			public boolean accept(File dir, String name) {
-				if(name.endsWith(".wav"))
-					return true;
-				else if(name.endsWith(".mp3"))
-					return true;
-				else if(name.endsWith(".flac"))
+				if(name.endsWith(".mp3"))
 					return true;
 				else
 					return false;
 			}
-		})) {
-			JPanel song = new JPanel(new GridLayout(1, 5));
-			JLabel songname = new JLabel(s.substring(0, s.length()-4));
-			songname.setPreferredSize(new Dimension(songlist.getSize().width, 20));
+		}))
+		{
+			JPanel song = new JPanel();
+			JLabel sequence = new JLabel(""+sq);
+			sq++;
+			sequence.setPreferredSize(new Dimension(25, 25));
+			song.add(sequence, 0);
+			int division = s.indexOf('-');
+			
+			JLabel songname = new JLabel(s.substring(division+1, s.length()-4));
+			song.setPreferredSize(new Dimension(900, 30));
 			song.add(songname);
+			JLabel singers = new JLabel(s.substring(0, division));
+			singers.setPreferredSize(new Dimension(250, 30));
+			song.add(singers);
+			songname.setPreferredSize(new Dimension(400, 30));
 			JButton playSong = new JButton("播放");
+			playSong.setPreferredSize(new Dimension(60, 25));
 			song.add(playSong);
-			playSong.addActionListener(new PlayerController(songdir.getName()+'/'+s));
+			playSong.addActionListener(new PlayerStart(songdir.getName()+'/'+s, pause));
+			JButton addToFavour = new JButton("+");
+			addToFavour.setPreferredSize(new Dimension(60, 25));
+			song.add(addToFavour);
 			songlist.add(song);
 		}
+		
+		
 		
 		JPanel jpl = new JPanel(new GridLayout(5, 1));
 		JButton jbl1 = new JButton("歌单1");
