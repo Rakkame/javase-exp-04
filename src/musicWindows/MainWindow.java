@@ -1,54 +1,34 @@
 package musicWindows;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 
-import javax.swing.*;
+import functions.Configuration;
+import functions.PlayerController;
+import listeners.FrameResize;
+
 
 public class MainWindow {
 	
-	public static File loadSongDirectory() {
-		String usrdir = System.getProperty("user.dir");
-		File config = new File(usrdir + "/.config");
-		File songdir = null;
-		Properties pro = new Properties();
-		if(config.exists()) {
-			
-			InputStream input;
-			try {
-				input = new FileInputStream(config);
-				pro.load(input);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			songdir = new File(pro.getProperty("songdir"));
-		} else {
-			songdir = new File("./song");
-			try {
-				config.createNewFile();
-				pro.setProperty("songdir", songdir.getAbsolutePath());
-				FileOutputStream output = new FileOutputStream(config);
-				pro.store(output, "config");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return songdir;
-	}
-
-	public static void main(String[] args) {
+	public static JFrame mainwindow = new JFrame("Music Player by Rin");
+	public static SongListWindow songListPanel = null;
+	
+	public static void main(String[] args) throws IOException {
 		
-		File songdir = loadSongDirectory();
+/*		URL url = Thread.currentThread().getContextClassLoader().getResource("MainWindow");
+		String datapath = url.getPath();
+		System.out.println(new File(datapath).getCanonicalPath());
+		@SuppressWarnings("unused")
+		System.out.println(Database.musicdir);*/
+		Configuration data = new Configuration(System.getProperty("user.dir")+File.separator+"database");
+		data.updateConfig();
 		
-		JFrame mainwindow = new JFrame("Music Listener");
 		mainwindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
 		//设置主窗口
@@ -58,30 +38,31 @@ public class MainWindow {
 		frameSize.height = displaySize.height *2/3;
 		mainwindow.setSize(frameSize);
 		mainwindow.setLocation((displaySize.width /6), (displaySize.height /6)); //设置窗口居中显示器显示
+		mainwindow.addComponentListener(new FrameResize(mainwindow));		//添加窗口大小监听器
 		
 		//初始化播放控制栏
 		PlayerController playctrl = new PlayerController(new Color(0, 200, 140));
 		mainwindow.add(playctrl, "South");
 		
-		//初始化曲库显示栏
-		SongListWindow songlist = new SongListWindow(new Color(175, 175, 175), songdir, playctrl);
-		mainwindow.add(songlist, "Center");
+		//初始化歌单内歌曲列表显示栏
+		songListPanel = new SongListWindow(new Color(175, 175, 175), Configuration.musicdir);
+		JScrollPane musicSpane = new JScrollPane(songListPanel);
+		musicSpane.getVerticalScrollBar().setUnitIncrement(10);
+		mainwindow.add(musicSpane, "Center");
 		
-		JPanel jpl = new JPanel(new GridLayout(5, 1));
-		JButton jbl1 = new JButton("歌单1");
-		JButton jbl2 = new JButton("歌单2");
-		JButton jbl3 = new JButton("歌单3");
-		JButton jbl4 = new JButton("歌单4");
-		JButton jbl5 = new JButton("歌单5");
-		jpl.add(jbl1);
-		jpl.add(jbl2);
-		jpl.add(jbl3);
-		jpl.add(jbl4);
-		jpl.add(jbl5);
-		mainwindow.add(jpl, "West");
+		//初始化歌单列表显示栏
+		JScrollPane sheetSpane = new JScrollPane(new SheetListWindow(new Color(123,210,170), null),
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		mainwindow.add(sheetSpane, "West");
 		
 		mainwindow.setVisible(true);
+
 	}
+	
+
 }
+
+
 
 

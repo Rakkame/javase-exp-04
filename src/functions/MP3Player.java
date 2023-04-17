@@ -2,10 +2,10 @@ package functions;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
-import musicWindows.PlayerController;
 
 /**
  * 本地音乐播放功能类
@@ -16,15 +16,16 @@ public class MP3Player extends Player {
 	private boolean stopflag = false;				//暂停标志
 	public static MP3Player last = null;			//指向最后一个MP3Player类的实例
 	private Thread thread = null;					//音乐播放线程
-		
+	
+	
 	
 	/**
 	 * 通过文件流构造MP3Player类对象
 	 * @param fileInputStream 文件输出流
 	 * @throws JavaLayerException 如果player类构造方法抛出异常
 	 */
-	public MP3Player(FileInputStream fileInputStream) throws JavaLayerException {
-		super(fileInputStream);
+	public MP3Player(InputStream inputStream) throws JavaLayerException {
+		super(inputStream);
 		this.thread = new Thread(){
 			@Override
 			public void run() {
@@ -81,7 +82,7 @@ public class MP3Player extends Player {
 	 */
 	public synchronized void close()
 	{
-		PlayerController.pause.setEnabled(false);
+		PlayerController.pause.setEnabled(false);	//此处可以改成其他相关收尾操作
 		super.close();
 	}
 	
