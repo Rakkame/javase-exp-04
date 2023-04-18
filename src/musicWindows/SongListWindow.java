@@ -23,7 +23,7 @@ public class SongListWindow extends JPanel {
 	public static String[] songlist = null;
 	
 	public SongListWindow(Color color) {
-		
+		System.out.println("Nothing done");
 	}
 	
 	public SongListWindow(Color color, File songdir) throws IOException {

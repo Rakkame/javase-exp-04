@@ -17,7 +17,7 @@ public class SongInfo extends JPanel {
 	private Dimension size 			= new Dimension(FrameResize.framsize.width*2/3, 30);//900,30
 	private Dimension namesize 		= new Dimension(FrameResize.framsize.width/3, 30);	//400,30
 	private Dimension singersize 	= new Dimension(FrameResize.framsize.width/6, 30);	//250,30
-	private Dimension buttonsize 	= new Dimension(60, 30);							//60,25
+	private Dimension buttonsize 	= new Dimension(80, 30);							//60,25
 	private Dimension sqsize 		= new Dimension(30, 30);							//25,25
 	
 	public SongInfo(int sq, String songinfo){
@@ -66,7 +66,7 @@ public class SongInfo extends JPanel {
 		this.add(singerName);
 		JButton playSong = new JButton("播放");
 		playSong.setPreferredSize(buttonsize);
-		playSong.addActionListener(new PlayerStart(md5, sq-1));
+		playSong.addActionListener(new PlayerStart(sq-1, songname, md5));
 		this.add(playSong);
 		JButton addToFavour = new JButton("+");
 		addToFavour.setPreferredSize(buttonsize);

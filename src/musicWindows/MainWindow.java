@@ -54,6 +54,7 @@ public class MainWindow {
 		JScrollPane sheetSpane = new JScrollPane(new SheetListWindow(new Color(123,210,170), null),
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		sheetSpane.getVerticalScrollBar().setUnitIncrement(10);
 		mainwindow.add(sheetSpane, "West");
 		
 		mainwindow.setVisible(true);

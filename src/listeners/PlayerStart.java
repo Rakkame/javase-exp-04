@@ -24,8 +24,9 @@ public class PlayerStart implements ActionListener{
 		this.name = name;
 	}
 	
-	public PlayerStart(String md5, int sequence) {
+	public PlayerStart(int sequence, String name, String md5) {
 		this.md5 = md5;
+		this.name = name;
 		this.sequence = sequence;
 	}
 	
@@ -34,13 +35,13 @@ public class PlayerStart implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		PlayerController.currentSequence = this.sequence; 
 		try {
-			if(name != null)
-				new MP3Player(this.name).play();
-			else if(md5 != null) {
+			if(md5 != null)
 				new BufferToPlayer(md5, e).start();
-			}
+			else if(name != null)
+				new MP3Player(this.name).play();
 			PlayerController.enableAllButtons();
 			PlayerController.pause.setText("暂停");
+			PlayerController.label.setText(name);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (JavaLayerException e2) {

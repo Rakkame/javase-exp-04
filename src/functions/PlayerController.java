@@ -2,9 +2,11 @@ package functions;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import listeners.SwitchSong;
@@ -13,7 +15,7 @@ import model.MusicSheet;
 public class PlayerController extends JPanel {
 
 	/**
-	 * 
+	 * 版本号
 	 */
 	private static final long serialVersionUID = -8011781365303920633L;
 	/**当前播放歌的歌单列表*/
@@ -26,6 +28,8 @@ public class PlayerController extends JPanel {
 	public static JButton last = new JButton("上一曲");
 	/**控制按钮：下一曲*/
 	public static JButton next = new JButton("下一曲");
+	/**标签：当前播放歌曲的名称*/
+	public static JLabel label = new JLabel("");
 	
 	/**使所有控制按钮失效*/
 	public static void disableAllButtons() {
@@ -41,11 +45,15 @@ public class PlayerController extends JPanel {
 	}
 
 	public PlayerController(Color color) {
+		super(new GridLayout(2,1));
 		this.setBackground(color);
 		this.setPreferredSize(new Dimension(this.getSize().width, 70));
-		this.add(last);
-		this.add(pause);
-		this.add(next);
+		this.add(label);
+		JPanel control = new JPanel();
+		control.add(last);
+		control.add(pause);
+		control.add(next);
+		this.add(control);
 		PlayerController.disableAllButtons();
 		pause.addActionListener(new PauseAL());
 		last.addActionListener(new SwitchSong(-1));

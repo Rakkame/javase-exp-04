@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JComponent;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
@@ -19,6 +20,14 @@ public class MouseSelect implements MouseListener {
 	private MusicSheet sheet = null;
 	private Music music = null;
 	private File dir = null;
+	
+	private static Border selected;
+	private static Border unselected;
+	
+	static {
+	selected = new LineBorder(new Color(0,0,0));
+	unselected = new EmptyBorder(1, 1, 1, 1);
+	}
 	
 	public MouseSelect() {}
 	
@@ -37,6 +46,8 @@ public class MouseSelect implements MouseListener {
 		if(sheet != null) {
 			try {
 				MainWindow.songListPanel.resetAll(dir, sheet);
+				MainWindow.songListPanel.repaint();
+				MainWindow.mainwindow.setVisible(true);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -61,13 +72,13 @@ public class MouseSelect implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		JComponent cmp = (JComponent) e.getComponent();
-		cmp.setBorder(new LineBorder(new Color(0,0,0)));
+		cmp.setBorder(selected);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		JComponent cmp = (JComponent) e.getComponent();
-		cmp.setBorder(new EmptyBorder(1, 1, 1, 1));
+		cmp.setBorder(unselected);
 	}
 
 }
