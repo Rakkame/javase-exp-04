@@ -55,7 +55,7 @@ public class FileDownloader {
 		}
 	}
 
-	public static void downloadMusicSheetPicture(String url, String musicSheetUuid, String targetPath) {
+	public static String downloadMusicSheetPicture(String url, String musicSheetUuid, String targetPath) {
 		HttpClient client = new HttpClient();
 		GetMethod get = null;
 		FileOutputStream output = null;
@@ -68,9 +68,10 @@ public class FileDownloader {
 			if (SUCCESS == i) {
 				filename = java.net.URLDecoder
 						.decode(get.getResponseHeader("Content-Disposition").getValue().substring(21), "UTF-8");
-				System.out.println("[The file name getting from HTTP HEADER] " + filename);
 
 				File storeFile = new File(targetPath + "/" + filename);
+				if(storeFile.exists())
+					return filename;
 				output = new FileOutputStream(storeFile);
 				output.write(get.getResponseBody());
 			} else {
@@ -90,6 +91,7 @@ public class FileDownloader {
 			get.releaseConnection();
 			client.getHttpConnectionManager().closeIdleConnections(0);
 		}
+		return filename;
 	}
 	
 	public static ByteArrayInputStream getMusicStream(String url, String md5) {

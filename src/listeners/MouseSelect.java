@@ -45,7 +45,12 @@ public class MouseSelect implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(sheet != null) {
-			MainWindow.musicSpane.setViewportView(new SongListWindow(new Color(175, 175, 175), sheet));
+			try {
+				MainWindow.musicSpane.setViewportView(new SongListWindow(new Color(175, 175, 175), sheet));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			MainWindow.musicSpane.validate();
 		}else if(music != null) {
 			//todo

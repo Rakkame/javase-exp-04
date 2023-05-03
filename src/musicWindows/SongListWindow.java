@@ -1,14 +1,21 @@
 package musicWindows;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import functions.Configuration;
+import httpclient.FileDownloader;
 import listeners.MouseSelect;
 import model.MusicSheet;
 
@@ -54,9 +61,23 @@ public class SongListWindow extends JPanel {
 		}
 	}
 	
-	public SongListWindow(Color color, MusicSheet sheet) {
-		super(new GridLayout(0, 1));
+	public SongListWindow(Color color, MusicSheet sheet) throws IOException {
+		super(new VerticalFlowLayout());
 		this.setBackground(color);
+		
+		String picName = FileDownloader.downloadMusicSheetPicture(Configuration.serverURL + "/downloadPicture?",
+				sheet.getUuid(),
+				Configuration.iconsdir.getCanonicalPath());
+		ImageIcon pic = new ImageIcon(Configuration.iconsdir.getCanonicalPath() + File.separator + picName);
+		JPanel picline = new JPanel();
+		Image img = pic.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT);
+		pic.setImage(img);
+		picline.add(new JLabel(pic));
+		
+		
+		
+		this.add(picline);
+		
 		Map<String, String> musicmap = sheet.getMusicItems();
 		int length = musicmap.keySet().toArray().length;
 		Iterator<String> iter = musicmap.keySet().iterator();
