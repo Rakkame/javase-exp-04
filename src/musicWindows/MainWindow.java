@@ -3,10 +3,8 @@ package musicWindows;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
@@ -17,23 +15,18 @@ import listeners.FrameResize;
 
 public class MainWindow {
 	
-	public static JFrame mainwindow = new JFrame("Music Player by Rin");
+	public static JFrame mainwindow = new JFrame("Ringo Music Player");
 	public static JScrollPane musicSpane = null;
 	
 	public static void main(String[] args) throws IOException {
 		
-/*		URL url = Thread.currentThread().getContextClassLoader().getResource("MainWindow");
-		String datapath = url.getPath();
-		System.out.println(new File(datapath).getCanonicalPath());
-		@SuppressWarnings("unused")
-		System.out.println(Database.musicdir);*/
-		Configuration data = new Configuration(System.getProperty("user.dir")+File.separator+"database");
+		
+		
+		Configuration data = new Configuration();
 		data.updateConfig();
 		
 		mainwindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
-		JMenu menu = new JMenu("test");
-		mainwindow.add(menu);
 		
 		//设置主窗口
 		Dimension displaySize = Toolkit.getDefaultToolkit().getScreenSize();//获得显示器大小对象
@@ -67,6 +60,8 @@ public class MainWindow {
 		mainwindow.setVisible(true);
 
 	}
+	
+	
 	
 
 }

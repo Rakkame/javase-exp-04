@@ -5,22 +5,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class Configuration extends File {
+public class Configuration {
 
-	private static final long serialVersionUID = 2068576379387362808L;
-	public static String sourcePath;
+	public String sourcePath;
 	public static File config;
 	public static File musicdir;
 	public static File iconsdir;
 	public static String serverURL = "http://119.167.221.16:38080/music.server";
 
-	public Configuration(String pathname) throws IOException {
-		super(pathname);
-		if(!this.exists())
-			this.mkdirs();
-		Configuration.config = new File(pathname + File.separator + ".config");
-		Configuration.musicdir = new File(pathname + File.separator + "song");
-		Configuration.iconsdir = new File(pathname + File.separator + "icons");
+	public Configuration() throws IOException {
+		sourcePath = this.getPath() + "database";
+		Configuration.config = new File(sourcePath  + ".config");
+		Configuration.musicdir = new File(sourcePath + File.separator + "song");
+		Configuration.iconsdir = new File(sourcePath + File.separator + "icons");
 		if(!Configuration.config.exists())
 			this.initConfig();
 		if(!Configuration.iconsdir.exists())
@@ -41,7 +38,7 @@ public class Configuration extends File {
 	public void initConfig() throws IOException {
 		Configuration.config.createNewFile();
 		Properties pro = new Properties();
-		pro.setProperty("database.path", this.getCanonicalPath());
+		pro.setProperty("database.path", sourcePath);
 		pro.setProperty("serverURL", serverURL);
 		FileOutputStream output = new FileOutputStream(config);
 		pro.store(output, null);
@@ -54,4 +51,24 @@ public class Configuration extends File {
 	public void storeConfig() {
 		
 	}
+	
+	public String getPath()
+	{
+		String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		if(System.getProperty("os.name").contains("dows"))
+		{
+			path = path.substring(1,path.length());
+		}
+		if(path.contains("jar"))
+		{
+			path = path.substring(0,path.lastIndexOf("."));
+			return path.substring(0,path.lastIndexOf("/"));
+		}
+		if(path.contains("bin/")) {
+			return path.replaceAll("bin/", "");
+		}
+		else
+			return path.replace("target/classes/", "");
+	}
+	
 }
