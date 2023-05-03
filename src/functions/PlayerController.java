@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import listeners.SwitchSong;
-import model.MusicSheet;
 
 public class PlayerController extends JPanel {
 
@@ -18,16 +17,25 @@ public class PlayerController extends JPanel {
 	 * 版本号
 	 */
 	private static final long serialVersionUID = -8011781365303920633L;
+	
 	/**当前播放歌的歌单列表*/
-	public static MusicSheet sheet;
+	public static String[] list;
+	
+	/**在线播放或本地文件播放*/
+	public static boolean pathOrMD5 = true;
+	
 	/**当前播放歌曲的序号*/
 	public static int currentSequence = 0;
+	
 	/**控制按钮：暂停/播放*/
 	public static JButton pause = new JButton("播放");
+	
 	/**控制按钮：上一曲*/
 	public static JButton last = new JButton("上一曲");
+	
 	/**控制按钮：下一曲*/
 	public static JButton next = new JButton("下一曲");
+	
 	/**标签：当前播放歌曲的名称*/
 	public static JLabel label = new JLabel("");
 	

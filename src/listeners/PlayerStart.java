@@ -12,6 +12,7 @@ import functions.MP3Player;
 import functions.PlayerController;
 import httpclient.FileDownloader;
 import javazoom.jl.decoder.JavaLayerException;
+import musicWindows.SongListWindow;
 
 public class PlayerStart implements ActionListener{
 
@@ -33,14 +34,22 @@ public class PlayerStart implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		PlayerController.currentSequence = this.sequence; 
+		PlayerController.currentSequence = this.sequence;
+		
 		try {
-			if(md5 != null)
+			if(md5 != null) {
 				new BufferToPlayer(md5, e).start();
-			else if(name != null)
-				new MP3Player(this.name).play();
-			PlayerController.enableAllButtons();
-			PlayerController.pause.setText("暂停");
+				PlayerController.list = SongListWindow.md5list;
+				PlayerController.pathOrMD5 = false;
+				
+			}
+			else if(name != null) {
+				new MP3Player(name).play();
+				PlayerController.list = SongListWindow.songlist;
+				PlayerController.pathOrMD5 = true;
+				PlayerController.enableAllButtons();
+				PlayerController.pause.setText("暂停");
+			}
 			PlayerController.label.setText(name);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
@@ -62,14 +71,18 @@ class BufferToPlayer extends Thread{
 		String query = Configuration.serverURL + "/downloadMusic";
 		Object o = e.getSource();
 		JButton button = null;
+		String text = null;
 		if(o instanceof JButton) {
 			button = (JButton)o;
+			text = button.getText();
 			button.setText("缓冲中");
 		}
 		ByteArrayInputStream buffer = FileDownloader.getMusicStream(query,  md5);
-		button.setText("播放");
+		button.setText(text);
 		try {
 			new MP3Player(buffer).play();
+			PlayerController.enableAllButtons();
+			PlayerController.pause.setText("暂停");
 		} catch (JavaLayerException e) {
 			e.printStackTrace();
 		}

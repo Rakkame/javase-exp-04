@@ -41,9 +41,6 @@ public class SongInfo extends JPanel {
 		playSong.setPreferredSize(buttonsize);
 		this.add(playSong);
 		playSong.addActionListener(new PlayerStart(sq-1, SongListWindow.songdir+songinfo));
-		JButton addToFavour = new JButton("+");
-		addToFavour.setPreferredSize(buttonsize);
-		this.add(addToFavour);
 	}
 	
 	public SongInfo(int sq, String songinfo, String md5){
@@ -55,7 +52,7 @@ public class SongInfo extends JPanel {
 		int division1 = songinfo.indexOf('-');
 		int division2 = songinfo.lastIndexOf('.');
 		String singername = (division1 >= 0)? songinfo.substring(0, division1) : "佚名";
-		String songname = (division1 >= 0)? songinfo.substring(division1+1, division2) : songinfo.substring(division1+1);
+		String songname = (division1 >= 0|| division2 >= 0)? songinfo.substring(division1+1, division2) : songinfo.substring(division1+1);
 		JLabel songName = new JLabel(songname);
 		JLabel singerName = new JLabel(singername);
 		
@@ -68,9 +65,6 @@ public class SongInfo extends JPanel {
 		playSong.setPreferredSize(buttonsize);
 		playSong.addActionListener(new PlayerStart(sq-1, songname, md5));
 		this.add(playSong);
-		JButton addToFavour = new JButton("+");
-		addToFavour.setPreferredSize(buttonsize);
-		this.add(addToFavour);
 	}
 	
 	public void resize() {

@@ -14,6 +14,7 @@ import javax.swing.border.LineBorder;
 import model.Music;
 import model.MusicSheet;
 import musicWindows.MainWindow;
+import musicWindows.SongListWindow;
 
 public class MouseSelect implements MouseListener {
 	
@@ -44,17 +45,17 @@ public class MouseSelect implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(sheet != null) {
-			try {
-				MainWindow.songListPanel.resetAll(dir, sheet);
-				MainWindow.songListPanel.repaint();
-				MainWindow.mainwindow.setVisible(true);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			MainWindow.musicSpane.setViewportView(new SongListWindow(new Color(175, 175, 175), sheet));
+			MainWindow.musicSpane.validate();
 		}else if(music != null) {
 			//todo
 		}else if(dir != null){
-			//todo
+			try {
+				MainWindow.musicSpane.setViewportView(new SongListWindow(new Color(175, 175, 175), dir));
+				MainWindow.musicSpane.validate();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		
 	}

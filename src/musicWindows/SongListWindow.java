@@ -21,14 +21,16 @@ public class SongListWindow extends JPanel {
 	
 	public static String songdir = null;
 	public static String[] songlist = null;
+	public static String[] md5list = null;
 	
 	public SongListWindow(Color color) {
 		System.out.println("Nothing done");
 	}
 	
 	public SongListWindow(Color color, File songdir) throws IOException {
+		super(new GridLayout(0, 1));
 		this.setBackground(color);
-		SongListWindow.songdir = songdir.getCanonicalPath() + '/';
+		SongListWindow.songdir = songdir.getCanonicalPath() + File.separator;
 		songlist = songdir.list((FilenameFilter) new FilenameFilter()
 		{
 			@Override
@@ -43,77 +45,34 @@ public class SongListWindow extends JPanel {
 					return false;
 			}
 		});
-		
 		int sq = 0;
 		for(String songfilename : songlist)
 		{
-			sq++;
-			SongInfo song = new SongInfo(sq, songfilename);
+			SongInfo song = new SongInfo(++sq, songfilename);
 			song.addMouseListener(new MouseSelect());
 			this.add(song);
 		}
-		this.setLayout(new GridLayout(sq, 1));
 	}
 	
 	public SongListWindow(Color color, MusicSheet sheet) {
+		super(new GridLayout(0, 1));
 		this.setBackground(color);
 		Map<String, String> musicmap = sheet.getMusicItems();
-		Iterator<String>  MD5bag = musicmap.keySet().iterator();
-		String md5 = null;
+		int length = musicmap.keySet().toArray().length;
+		Iterator<String> iter = musicmap.keySet().iterator();
+		md5list = new String[length];
+		int i = 0;
+		while(iter.hasNext()) {
+			md5list[i++] = iter.next();
+		}
 		String name = null;
 		int sq = 0;
-		while(MD5bag.hasNext()) {
-			
-			md5 = MD5bag.next();
+		for(String md5 : md5list)
+		{
 			name = musicmap.get(md5);
-			
 			SongInfo song = new SongInfo(++sq, name, md5);
 			song.addMouseListener(new MouseSelect());
 			this.add(song);
-		}
-	}
-	
-	public void resetAll(File songdir, MusicSheet sheet) throws IOException {
-		this.removeAll();
-		if(songdir != null) {
-			SongListWindow.songdir = songdir.getCanonicalPath() + '/';
-			songlist = songdir.list((FilenameFilter) new FilenameFilter()
-			{
-				@Override
-				public boolean accept(File dir, String name) {
-					if(name.endsWith(".mp3"))
-						return true;
-					if(name.endsWith(".wav"))
-						return true;
-					if(name.endsWith(".ogg"))
-						return true;
-					else
-						return false;
-				}
-			});
-			
-			int sq = 0;
-			for(String songfilename : songlist)
-			{
-				sq++;
-				SongInfo song = new SongInfo(sq, songfilename);
-				song.addMouseListener(new MouseSelect());
-				this.add(song);
-			}
-			this.setLayout(new GridLayout(sq, 1));
-		}else {
-			Map<String, String> musicmap = sheet.getMusicItems();
-			Iterator<String>  MD5bag = musicmap.keySet().iterator();
-			String md5 = null;
-			String name = null;
-			int sq = 0;
-			while(MD5bag.hasNext()) {
-				md5 = MD5bag.next();
-				name = musicmap.get(md5);
-				SongInfo song = new SongInfo(++sq, name, md5);
-				song.addMouseListener(new MouseSelect());
-				this.add(song);
-			}
 		}
 	}
 
