@@ -14,3 +14,6 @@
 
 ### 播放中
 ![3](screenShots/3.png)
+
+### 下载音乐
+![4](screenShots/4.png)
