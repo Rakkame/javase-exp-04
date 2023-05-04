@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import functions.Configuration;
 import httpclient.FileDownloader;
+import listeners.FrameResize;
 import listeners.MouseSelect;
 import model.MusicSheet;
 
@@ -65,18 +66,9 @@ public class SongListWindow extends JPanel {
 		super(new VerticalFlowLayout());
 		this.setBackground(color);
 		
-		String picName = FileDownloader.downloadMusicSheetPicture(Configuration.serverURL + "/downloadPicture?",
-				sheet.getUuid(),
-				Configuration.iconsdir.getCanonicalPath());
-		ImageIcon pic = new ImageIcon(Configuration.iconsdir.getCanonicalPath() + File.separator + picName);
-		JPanel picline = new JPanel();
-		Image img = pic.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT);
-		pic.setImage(img);
-		picline.add(new JLabel(pic));
+		this.sheetInfoDisplay(sheet);
 		
-		
-		
-		this.add(picline);
+		String directory = Configuration.musicdir.getCanonicalPath() + File.separator + sheet.getName();
 		
 		Map<String, String> musicmap = sheet.getMusicItems();
 		int length = musicmap.keySet().toArray().length;
@@ -91,10 +83,33 @@ public class SongListWindow extends JPanel {
 		for(String md5 : md5list)
 		{
 			name = musicmap.get(md5);
-			SongInfo song = new SongInfo(++sq, name, md5);
+			SongInfo song = new SongInfo(++sq, name, md5, directory);
 			song.addMouseListener(new MouseSelect());
 			this.add(song);
 		}
+	}
+	
+	public JPanel sheetInfoDisplay(MusicSheet sheet) throws IOException {
+		String picName = FileDownloader.downloadMusicSheetPicture(Configuration.serverURL + "/downloadPicture?",
+				sheet.getUuid(),
+				Configuration.iconsdir.getCanonicalPath());
+		ImageIcon pic = new ImageIcon(Configuration.iconsdir.getCanonicalPath() + File.separator + picName);
+		JPanel picline = new JPanel(new GridLayout(1, 2));
+		picline.setPreferredSize(new Dimension(FrameResize.framsize.width*4/5, 150));
+		int h = pic.getIconHeight();
+		int w = pic.getIconWidth();
+		Image img = pic.getImage().getScaledInstance(w*150/h, 150, Image.SCALE_SMOOTH);
+		pic.setImage(img);
+		picline.add(new JLabel(pic));
+		
+		JPanel info = new JPanel(new VerticalFlowLayout());
+		info.add(new JLabel("歌单名称:" + sheet.getName()));
+		info.add(new JLabel("创建者:" + sheet.getCreator()));
+		info.add(new JLabel("创建时间:" + sheet.getDateCreated()));
+		picline.add(info);
+		
+		this.add(picline);
+		return picline;
 	}
 
 }
